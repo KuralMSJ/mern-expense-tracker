@@ -1,10 +1,12 @@
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom'
 import DashboardPage from './pages/DashboardPage'
 import TransactionsPage from './pages/TransactionsPage'
+import BudgetsPage from './pages/BudgetsPage'
 
 const navItems = [
   { to: '/', label: 'Dashboard' },
   { to: '/transactions', label: 'Transactions' },
+  { to: '/budgets', label: 'Budgets' },
 ]
 
 function App() {
@@ -35,6 +37,7 @@ function App() {
           <Routes>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/transactions" element={<TransactionsPage />} />
+            <Route path="/budgets" element={<BudgetsPage />} />
           </Routes>
         </main>
       </div>
