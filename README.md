@@ -44,7 +44,7 @@ npm install
 npm run dev
 ```
 
-Open the URL Vite prints, usually `http://localhost:5173`. The frontend uses `http://localhost:5000/api` by default. To use another API base URL, set `VITE_API_BASE_URL` in a frontend `.env` file.
+Open the URL Vite prints, usually `http://localhost:5173`. The frontend uses `http://localhost:5000/api` by default. To use another API base URL, set `VITE_API_URL` in a frontend `.env` file.
 
 ## API Endpoints
 

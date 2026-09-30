@@ -1,6 +1,16 @@
-const sharedCategories = require('../../shared/categories.json');
-const EXPENSE_CATEGORIES = sharedCategories.expense;
-const INCOME_CATEGORIES = sharedCategories.income;
+// These category arrays must be kept identical to frontend/src/constants/categories.js.
+const EXPENSE_CATEGORIES = [
+  'Food',
+  'Rent',
+  'Utilities',
+  'Transport',
+  'Entertainment',
+  'Health',
+  'Shopping',
+  'Other',
+];
+
+const INCOME_CATEGORIES = ['Salary', 'Freelance', 'Other'];
 const ALL_CATEGORIES = [...new Set([...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES])];
 
 const getCategoriesByType = (type) => {
