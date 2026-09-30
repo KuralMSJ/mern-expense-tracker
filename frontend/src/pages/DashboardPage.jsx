@@ -1,7 +1,10 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import RecentTransactions from '../components/RecentTransactions'
 import SummaryCards from '../components/SummaryCards'
 import { getStatsSummary, getTransactions } from '../api/client'
+
+const ExpenseDonutChart = lazy(() => import('../components/ExpenseDonutChart'))
+const IncomeExpenseTrendChart = lazy(() => import('../components/IncomeExpenseTrendChart'))
 
 const getErrorMessage = (error, fallback) =>
   error?.response?.data?.message || error?.message || fallback
@@ -66,6 +69,14 @@ function DashboardPage() {
         loading={dashboard.summaryLoading}
         error={dashboard.summaryError}
       />
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Suspense fallback={<p className="text-sm text-slate-600">Loading expense chart...</p>}>
+          <ExpenseDonutChart />
+        </Suspense>
+        <Suspense fallback={<p className="text-sm text-slate-600">Loading trend chart...</p>}>
+          <IncomeExpenseTrendChart />
+        </Suspense>
+      </div>
       <RecentTransactions
         transactions={dashboard.transactions}
         loading={dashboard.transactionsLoading}
