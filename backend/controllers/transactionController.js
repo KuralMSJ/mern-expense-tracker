@@ -4,6 +4,13 @@ const { roundMoney } = require('../utils/money');
 
 const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+const protectSpreadsheetFormula = (value) => {
+  const text = String(value ?? '');
+  return /^[=+\-@]/.test(text) ? `'${text}` : text;
+};
+
+const escapeCsvCell = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`;
+
 const parseDateParam = (value, name) => {
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
     return { error: `${name} must be a valid date in YYYY-MM-DD format` };
@@ -148,6 +155,29 @@ const getTransactions = async (req, res, next) => {
   }
 };
 
+const exportTransactions = async (req, res, next) => {
+  try {
+    const transactions = await Transaction.find({})
+      .sort({ date: -1, createdAt: -1 })
+      .lean();
+    const rows = transactions.map((transaction) => [
+      escapeCsvCell(new Date(transaction.date).toISOString().slice(0, 10)),
+      escapeCsvCell(protectSpreadsheetFormula(transaction.type)),
+      escapeCsvCell(protectSpreadsheetFormula(transaction.category)),
+      escapeCsvCell(roundMoney(transaction.amount).toFixed(2)),
+      escapeCsvCell(protectSpreadsheetFormula(transaction.note)),
+    ].join(','));
+    const csv = `\uFEFF${['Date,Type,Category,Amount,Note', ...rows].join('\r\n')}`;
+    const filename = `transactions-${new Date().toISOString().slice(0, 10)}.csv`;
+
+    res.set('Content-Type', 'text/csv; charset=utf-8');
+    res.set('Content-Disposition', `attachment; filename="${filename}"`);
+    res.status(200).send(csv);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const updateTransaction = async (req, res, next) => {
   try {
     const transaction = await Transaction.findById(req.params.id);
@@ -185,6 +215,7 @@ const deleteTransaction = async (req, res, next) => {
 module.exports = {
   createTransaction,
   getTransactions,
+  exportTransactions,
   updateTransaction,
   deleteTransaction,
 };
