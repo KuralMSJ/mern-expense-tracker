@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const healthRoutes = require('./routes/health');
+const transactionsRoutes = require('./routes/transactions');
 const { errorHandler } = require('./middleware/errorHandler');
 
 dotenv.config();
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/health', healthRoutes);
+app.use('/api/transactions', transactionsRoutes);
 app.use(errorHandler);
 
 connectDB();
